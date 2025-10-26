@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Xin lỗi người đẹp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Seaweed+Script&display=swap" rel="stylesheet">
+  <style>
+    /* GLOBAL RESET AND BODY STYLES - Kept from original */
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    background:#f0f2f5;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:'Georgia',serif;
+    overflow:hidden;
+    touch-action:manipulation;
+}
+
+/* SECTION STYLES */
+section{
+    margin:100px auto; /* Changed back to 100px for better vertical centering */
+    text-align:center;
+    perspective:800px;
+    perspective-origin:50% 100px;
+}
+
+/* ENVELOPE BASE */
+.envelope{
+    width:400px;
+    height:225px;
+    position:relative;
+    margin:0 auto;
+    transform-style:preserve-3d;
+    cursor:pointer;
+    transition:transform 1s ease;
+    box-shadow:-10px 10px 20px rgba(0,0,0,.25);
+    background-color: #dfded9; /* Base color for the envelope body */
+}
+
+/* ENVELOPE ANIMATION (Spin) */
+.envelope.open{
+    animation:none;
+    transform:rotateY(0)!important;
+}
+
+.envelope:not(.open){
+    animation:spin 12s infinite linear;
+}
+
+@keyframes spin{
+    0%{transform:rotateY(0deg)}
+    100%{transform:rotateY(360deg)}
+}
+
+/* ENVELOPE FRONT (The reverse side, visible when spinning) */
+.front{
+    position:absolute;
+    width:100%;height:100%;
+    background:#dbdad6;
+    transform:translateZ(-1px) rotateY(180deg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    backface-visibility:hidden;
+}
+
+.front h1{
+    font-family:'Seaweed Script',cursive;
+    font-size:42px;
+    color:#7f8c8d;
+    margin:0;
+}
+
+/* INNER TOP TRIANGLE */
+.inner{
+    position:absolute;
+    width:0;height:0;
+    top:0;left:0;
+}
+.inner::before{
+    content:"";
+    position:absolute;
+    border-left:200px solid transparent;
+    border-right:200px solid transparent;
+    border-top:150px solid #ebeae5;
+    top:0;left:0;
+}
+
+/* BOTTOM SECTION (Main body shape) */
+.bottom{
+    position:absolute;
+    width:100%;height:225px;
+    top:0;left:0;
+}
+.bottom::before{
+    content:"";
+    position:absolute;
+    border-left:200px solid transparent;
+    border-right:200px solid transparent;
+    border-bottom:150px solid #ebeae5;
+    top:74px;left:0;
+}
+.bottom::after{
+    content:"";
+    position:absolute;
+    border-left:170px solid transparent;
+    border-right:170px solid transparent;
+    border-bottom:120px solid #dbdad6;
+    top:105px;left:30px;
+}
+
+/* FLAP (The opening part) */
+.flap{
+    position:absolute;
+    width:0;height:0;
+    top:0;left:0;
+    transform-origin:top center;
+    transition:transform 1s cubic-bezier(.68,-.55,.265,1.55);
+    z-index:10;
+}
+.flap::before{
+    content:"";
+    position:absolute;
+    border-left:200px solid transparent;
+    border-right:200px solid transparent;
+    border-top:150px solid #f0efeb;
+    top:0;left:0;
+}
+.flap::after{
+    content:"";
+    position:absolute;
+    border-left:170px solid transparent;
+    border-right:170px solid transparent;
+    border-top:120px solid #ebeae5;
+    top:0;left:30px;
+}
+
+/* OPEN FLAP TRANSFORMATION */
+.envelope.open .flap{transform:rotateX(180deg)}
+
+/* LETTER CONTENT */
+.letter{
+    position:absolute;
+    width:340px;height:420px;
+    background:#fffef0;
+    top:60px;left:30px;
+    padding:40px 30px;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+    border:1px solid #f1c40f;
+    opacity:0;
+    transform:translateY(100px) scale(.8);
+    transition:all .8s ease .4s;
+    z-index:5;
+    font-size:17px;line-height:1.7;
+    color:#2c3e50;
+    pointer-events:none;
+}
+.envelope.open .letter{
+    opacity:1;
+    transform:translateY(-80px) scale(1); /* Letter slides up and scales to full size */
+    pointer-events: auto; /* Make the letter text selectable when open */
+}
+
+.letter h1{
+    text-align:center;
+    color:#e74c3c;
+    font-family:'Seaweed Script',cursive;
+    font-size:36px;
+    margin-bottom:20px;
+}
+.letter p{margin-bottom:18px;text-align:justify}
+.letter .signature{
+    text-align:right;
+    margin-top:30px;
+    font-style:italic;
+    color:#d35400;
+    font-weight:bold;
+}
+
+/* TAP HINT */
+.tap-hint{
+    margin-top:180px;
+    color:#95a5a6;
+    font-size:15px;
+    animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:.7}50%{opacity:1}}
+
+/* MEDIA QUERIES - Kept from original for responsiveness */
+@media (max-width:480px){
+    .envelope{
+        width:300px;height:169px;
+        transform:scale(.9);
+    }
+    .front h1{font-size:32px}
+    .inner::before,.flap::before,.bottom::before{
+        border-left-width:150px;
+        border-right-width:150px;
+        border-top-width:112px;
+    }
+    .flap::after,.bottom::after{
+        border-left-width:128px;
+        border-right-width:128px;
+        border-top-width:90px;
+        left:22px;
+    }
+    .bottom::before{top:55px}
+    .bottom::after{top:78px}
+    .letter{
+        width:260px;height:360px;
+        left:20px;top:40px;
+        padding:30px 20px;
+        font-size:15px;
+    }
+    .envelope.open .letter{transform:translateY(-60px) scale(1)}
+    section{margin:60px auto}
+}
+@media (max-width:360px){.envelope{transform:scale(.8)}}
+  </style>
+</head>
+<body>
+
+  <section>
+    <div class="envelope" id="envelope">
+      <div class="front"><h1>Lan Thi</h1></div>
+      <div class="inner"></div>
+      <div class="bottom"></div>
+      <div class="flap"></div>
+
+      <div class="letter">
+        <h1>Anh xin lỗi</h1>
+        <p>Nghe anh này Lan Thi,</p>
+        <p>Anh thật sự rất yêu em, anh thương em vì tính cách và những gì em trải qua. Anh không thể quên em được, em rất quan trọng với anh. Liệu anh có thể làm lại 1 lần nữa không.</p>
+        <p class="signature">Yêu em lắm,<br>Lan Thi</p>
+      </div>
+    </div>
+    <div class="tap-hint">Mở Thư Đi Em</div>
+  </section>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    let isOpen = false;
+
+    function toggleEnvelope(){
+      isOpen = !isOpen;
+      envelope.classList.toggle('open', isOpen);
+    }
+
+    envelope.addEventListener('click', toggleEnvelope);
+    envelope.addEventListener('touchstart', e=>{
+      e.preventDefault();
+      toggleEnvelope();
+    });
+
+    // prevent double-tap zoom
+    let last=0;
+    document.addEventListener('touchend', e=>{
+      const now = Date.now();
+      if(now-last<=300) e.preventDefault();
+      last=now;
+    }, false);
+  </script>
+
+</body>
+</html>
